@@ -1,0 +1,15 @@
+{% extends 'users/base.html' %}
+
+
+{% block content %}
+    <h1>profile of: {{ user.username }}</h1>
+    <form action="{% url 'password_change' %}" method = 'get'>
+        <button type = 'submit'>change password</button>
+    </form>
+    <hr>
+    <p>{{ user.first_name }} {{user.last_name}}</p>
+    <p>{{ user.email }}</p>
+    <hr>
+    <small>last login: {{ user.last_login }}</small>
+
+{% endblock %}
