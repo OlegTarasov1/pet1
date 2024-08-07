@@ -42,3 +42,22 @@ class UserPasswordChange(PasswordChangeView):
     extra_context = {
         'title': 'password change'
     }
+
+
+from django.core.mail import send_mail
+from django.http import HttpResponse
+from django.views.decorators.http import require_POST
+
+
+
+def mail_despatcher(request):
+    subject = 'Привет от Django!'
+    message = 'Это тестовое сообщение.'
+    from_email = 'olegtarasov1002@gmail.com'
+    recipient_list = ['oldoleg6@mail.ru']
+
+    try:
+        send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+        return HttpResponse('Email sent successfully!')
+    except Exception as e:
+        return HttpResponse(f'Error sending email: {e}', status=500)
