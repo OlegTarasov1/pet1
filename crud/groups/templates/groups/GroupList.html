@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+</head>
+<body>
+    <h1>Group list:</h1>
+    <hr>
+    {% for i in group %}
+        <h2>{{ i.group_name }}</h2>
+        <p>{{ i.creator }}</p>
+        <p></p>
+        <small><a href = "{{ i.get_absolute_url }}">fall in</a></small>
+        <hr>
+    {% endfor %}
+
+    {% if page_obj.has_other_pages %}
+        {% for i in paginator.page_range %}
+            <li>
+                <a href = "?page={{i}}">{{i}}</a>
+            </li>
+        {% endfor%}
+    {% endif %}
+</body>
+</html>

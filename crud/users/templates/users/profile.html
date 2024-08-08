@@ -11,5 +11,9 @@
     <p>{{ user.email }}</p>
     <hr>
     <small>last login: {{ user.last_login }}</small>
+    <form action = '{% url "logout" %}' method="post">
+        {% csrf_token %}
+        <button method = 'submit'>log out</button>
+    </form>
 
 {% endblock %}
