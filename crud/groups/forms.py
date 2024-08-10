@@ -11,6 +11,7 @@ class CreateGroupForm(forms.ModelForm):
 
 class CreatePostForm(forms.ModelForm):
     text = forms.CharField(label = '', widget = forms.Textarea(attrs = {'placeholder': 'enter text of your post', 'cols': 50, 'rows': 5, 'style': 'resize: none;'}))
+    file = forms.FileField(label = '', required=False)
     class Meta:
         model = GroupPosts
-        fields = ['text']
+        fields = ['text', 'file']

@@ -30,7 +30,7 @@ class GroupPosts(models.Model):
     post = models.ForeignKey('Group', on_delete=models.CASCADE, related_name = 'group', null=True)
     text = models.TextField()
     post_slug = models.SlugField(unique=True)
-    image = models.ImageField()
+    file = models.ImageField(upload_to='post/', blank = True, null = True, default = None)
     time_created = models.DateTimeField(auto_now_add = True)
     time_updated = models.DateTimeField(auto_now = True)
     creator = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name = 'postCreator', null = True)

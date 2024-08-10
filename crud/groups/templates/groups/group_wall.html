@@ -7,12 +7,25 @@
 </head>
 <body>
     <h1>Posts for: {{ title }}</h1>
+    <p><a href = '{{ creation_url }}'>Click to create post</a></p>
     <hr>
     {% for i in post %}
         <p>{{ i.creator }}</p>
         <p>{{ i.text }}</p>
-        <small>{{ i.time_created }}</small>
+        {% if i.file %}
+            <img src = '{{ i.file.url }}'>
+            <p>{{ i.file.url }}</p>
+        {% endif %}
+        <small>time created: {{ i.time_created }}</small>
         <hr>
     {% endfor %}
+
+    {% if page_obj.has_other_pages %}
+        {% for i in paginator.page_range %}
+            <li>
+                <a href = "?page={{i}}">{{i}}</a>
+            </li>
+        {% endfor%}
+    {% endif %}
 </body>
 </html>

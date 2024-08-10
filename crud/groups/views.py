@@ -19,6 +19,12 @@ class ListGroups(ListView):
         'title': 'List Groups'
     }
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['creation_url'] = reverse_lazy('create_group')
+        return context
+
+
 class CreateGroup(LoginRequiredMixin, CreateView):
     form_class = CreateGroupForm
     context_object_name = 'form'
@@ -43,6 +49,7 @@ class GroupWall(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = self.kwargs.get('slug')
+        context['creation_url'] = reverse_lazy('create_post', kwargs = {'slug': self.kwargs.get('slug')})
         return context
 
     def get_queryset(self):
