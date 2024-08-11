@@ -13,7 +13,7 @@
         <p>{{ i.creator }}</p>
         <p>{{ i.text }}</p>
         {% if i.file %}
-            <img src = '{{ i.file.url }}'>
+            <img src = '{{ i.file.url }}' width = '300' height = '400'>
             <p>{{ i.file.url }}</p>
         {% endif %}
         <small>time created: {{ i.time_created }}</small>
