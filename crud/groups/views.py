@@ -7,6 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
+from django.db.models import Count
 from .forms import CreateGroupForm, CreatePostForm
 from .models import Group, GroupPosts
 
@@ -60,7 +61,7 @@ class GroupWall(ListView):
         return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        return GroupPosts.objects.filter(post__group_slug = self.kwargs.get('slug'))
+        return GroupPosts.objects.filter(post__group_slug=self.kwargs.get('slug')).annotate(likes_count=Count('likes')).order_by('-likes_count', '-time_created')
 
     def post(self, request, *args, **kwargs):
         post_id = request.POST.get('likes')

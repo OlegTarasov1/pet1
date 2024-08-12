@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.text import slugify
 from django.urls import reverse
 from django.contrib.auth import get_user_model
+from django.db.models import Count
 
 class Group(models.Model):
     group_name = models.CharField(max_length=100)
@@ -37,8 +38,10 @@ class GroupPosts(models.Model):
     
     likes = models.ManyToManyField(get_user_model(), blank=True, related_name='likes')
     dislikes = models.ManyToManyField(get_user_model(), blank=True, related_name='dislikes')
-    # post = models.ForeignKey('Group', on_delete=models.CASCADE, related_name = 'group')
-    # tag = models.ManyToManyField('Tag'related_name = 'tag')
+
+    @classmethod
+    def get_queryset_ordered_by_likes(cls):
+        return cls.objects.annotate(likes_count=Count('likes')).order_by('-likes_count', '-time_created')
 
     def get_absolute_url(self):
         return reverse('groups', kwargs={'slug': self.post_slug})
