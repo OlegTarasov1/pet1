@@ -16,6 +16,11 @@
             <img src = '{{ i.file.url }}' width = '300' height = '400'>
             <p>{{ i.file.url }}</p>
         {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" value="{{ i.pk }}" name = 'likes'>
+            <input type = 'submit' value="Like {{ i.amnt_of_likes }}">
+        </form>
         <small>time created: {{ i.time_created }}</small>
         <hr>
     {% endfor %}

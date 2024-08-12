@@ -34,6 +34,9 @@ class GroupPosts(models.Model):
     time_created = models.DateTimeField(auto_now_add = True)
     time_updated = models.DateTimeField(auto_now = True)
     creator = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name = 'postCreator', null = True)
+    
+    likes = models.ManyToManyField(get_user_model(), blank=True, related_name='likes')
+    dislikes = models.ManyToManyField(get_user_model(), blank=True, related_name='dislikes')
     # post = models.ForeignKey('Group', on_delete=models.CASCADE, related_name = 'group')
     # tag = models.ManyToManyField('Tag'related_name = 'tag')
 
@@ -45,5 +48,8 @@ class GroupPosts(models.Model):
             self.post_slug = slugify(self.text[:15])
         super().save(*args, **kwargs)
 
+    def amnt_of_likes(self):
+        return self.likes.count()
+    
     class Meta:
         ordering = ['-time_created']
