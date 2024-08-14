@@ -1,14 +1,15 @@
+from django.db.models.base import Model as Model
 from django.db.models.query import QuerySet
 from django.forms import BaseModelForm
-from django.http import HttpResponse
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, redirect
-from django.views.generic import ListView, CreateView
+from django.views.generic import ListView, CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.db.models import Count
-from .forms import CreateGroupForm, CreatePostForm
+from .forms import CreateGroupForm, CreatePostForm, EditPostForm
 from .models import Group, GroupPosts
 
 
@@ -77,7 +78,6 @@ class GroupWall(ListView):
         return self.get(request, *args, **kwargs)
                 
 
-
 class CreatePost(LoginRequiredMixin, CreateView):
     form_class = CreatePostForm
     template_name = 'groups/create_post.html'
@@ -94,3 +94,21 @@ class CreatePost(LoginRequiredMixin, CreateView):
     
     def get_success_url(self):
         return reverse_lazy('group_wall', kwargs = {'slug': self.kwargs.get('slug')})
+    
+
+class EditPost(UpdateView):
+    form_class = EditPostForm
+    template_name = 'groups/edit.html'
+    
+    def dispatch(self, request, *args, **kwargs):
+        post_slug = kwargs.get('slug_post')
+        post = get_object_or_404(GroupPosts, post_slug=post_slug)
+        if request.user != post.creator:
+            return redirect('login')
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_success_url(self):
+        return reverse_lazy('group_wall', kwargs = {'slug': self.kwargs.get('slug_group')})
+
+    def get_object(self):
+        return get_object_or_404(GroupPosts, post_slug = self.kwargs.get('slug_post'))

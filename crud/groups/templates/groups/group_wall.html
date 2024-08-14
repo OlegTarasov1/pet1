@@ -16,6 +16,10 @@
             <img src = '{{ i.file.url }}' width = '300' height = '400'>
             <p>{{ i.file.url }}</p>
         {% endif %}
+
+        {% if request.user == i.creator %}
+            <a href="{% url 'edit_post' slug_group=title slug_post=i.post_slug %}">Edit</a>
+        {% endif %}
         <form method="post">
             {% csrf_token %}
             <input type="hidden" value="{{ i.pk }}" name = 'likes'>
