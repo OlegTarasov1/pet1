@@ -9,7 +9,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.db.models import Count
-from .forms import CreateGroupForm, CreatePostForm, EditPostForm
+from .forms import CreateGroupForm, EditGroupForm, CreatePostForm, EditPostForm
 from .models import Group, GroupPosts
 
 
@@ -112,3 +112,26 @@ class EditPost(UpdateView):
 
     def get_object(self):
         return get_object_or_404(GroupPosts, post_slug = self.kwargs.get('slug_post'))
+    
+
+class GroupEdit(UpdateView):
+    form_class = EditGroupForm
+    template_name = 'groups/group_edit.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = self.kwargs.get('slug')
+        return context
+    
+    def get_success_url(self):
+        return reverse_lazy('group_wall', kwargs = {'slug': self.kwargs.get('slug')})
+
+    def get_object(self):
+        return get_object_or_404(Group, group_slug = self.kwargs.get('slug'))
+
+    def dispatch(self, request, *args, **kwargs):
+        slug = kwargs.get('slug')
+        post = get_object_or_404(Group, group_slug=slug)
+        if request.user != post.creator:
+            return redirect('login')
+        return super().dispatch(request, *args, **kwargs)

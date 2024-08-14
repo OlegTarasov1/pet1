@@ -27,3 +27,9 @@ class EditPostForm(forms.ModelForm):
     class Meta:
         model = GroupPosts
         fields = ['text', 'post_slug', 'file']
+
+
+class EditGroupForm(forms.ModelForm):
+    class Meta:
+        model = Group
+        fields = ['group_name', 'group_slug']
