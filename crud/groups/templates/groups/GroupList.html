@@ -1,12 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Group list</title>
-</head>
-<body>
-    <h1>Group list:</h1>
+{% extends 'users/base.html' %}
+
+{% block content %}
     <p><a href = '{{ creation_url }}'>Click to create group</a></p>
     <hr>
     {% for i in group %}
@@ -29,5 +23,4 @@
             </li>
         {% endfor%}
     {% endif %}
-</body>
-</html>
+{% endblock %}

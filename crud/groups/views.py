@@ -27,6 +27,13 @@ class ListGroups(ListView):
         context = super().get_context_data(**kwargs)
         context['creation_url'] = reverse_lazy('create_group')
         return context
+    
+    def get_queryset(self):
+        query = self.request.GET.get('search')
+        if query:
+            return Group.objects.filter(group_name__icontains=query)
+        else:
+            return super().get_queryset()
 
 
 class CreateGroup(LoginRequiredMixin, CreateView):

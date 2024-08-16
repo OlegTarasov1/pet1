@@ -15,6 +15,12 @@
         <span>|</span>
         <a href = "{% url 'register'%}">Register</a>
     {% endif %}
+
+    <form method = 'get' action = '{% url "groups"%}'>
+        <input type="search" name = 'search'>
+        <button type = 'submit'>search</button>
+    </form>
+    <a href = '{% url "groups" %}'>groups</a>
     <hr>
     {% block content %}
     {% endblock %}
