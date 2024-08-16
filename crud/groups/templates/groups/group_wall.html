@@ -1,34 +1,41 @@
 {% extends 'users/base.html' %}
 
 {% block content %}
-    <h1>Posts for: {{ title }}</h1>
-    <p><a href = '{{ creation_url }}'>Click to create post</a></p>
-    <hr>
-    {% for i in post %}
-        <p>{{ i.creator }}</p>
-        <p>{{ i.text }}</p>
-        {% if i.file %}
-            <img src = '{{ i.file.url }}' width = '300' height = '400'>
-            <p>{{ i.file.url }}</p>
-        {% endif %}
+    <div class="post-container">
+        <div class="post">
+            {% for i in post %}
+            <div class="post-item">
+                <p class="post-creator">{{ i.creator }}</p>
+                <p class="post-text">{{ i.text }}</p>
+                {% if i.file %}
+                <img src="{{ i.file.url }}" width="300" height="400" class="post-image">
+                <p class="post-image-url">{{ i.file.url }}</p>
+                {% endif %}
+                
+                {% if request.user == i.creator %}
+                <a class="edit-link" href="{% url 'edit_post' slug_group=title slug_post=i.post_slug %}">Edit</a>
+                {% endif %}
+                <form method="post" class="like-form">
+                    {% csrf_token %}
+                    <input type="hidden" value="{{ i.pk }}" name='likes'>
+                    <input type='submit' value="Like {{ i.amnt_of_likes }}" class="like-button">
+                </form>
+                <small class="post-time">time created: {{ i.time_created }}</small>
+            </div>
+            <hr class="divider"> <!-- Разделитель между постами -->
+            {% endfor %}
+        </div>
+    </div>
 
-        {% if request.user == i.creator %}
-            <a href="{% url 'edit_post' slug_group=title slug_post=i.post_slug %}">Edit</a>
-        {% endif %}
-        <form method="post">
-            {% csrf_token %}
-            <input type="hidden" value="{{ i.pk }}" name = 'likes'>
-            <input type = 'submit' value="Like {{ i.amnt_of_likes }}">
-        </form>
-        <small>time created: {{ i.time_created }}</small>
-        <hr>
-    {% endfor %}
 
-    {% if page_obj.has_other_pages %}
-        {% for i in paginator.page_range %}
-            <li>
-                <a href = "?page={{i}}">{{i}}</a>
-            </li>
-        {% endfor%}
-    {% endif %}
+    <ul class="pagination">
+        {% if page_obj.has_other_pages %}
+            {% for i in paginator.page_range %}
+                <li class="{% if page_obj.number == i %}active{% endif %}">
+                    <a href="?page={{ i }}">{{ i }}</a>
+                </li>
+            {% endfor %}
+        {% endif %}
+    </ul>
+
 {% endblock %}

@@ -1,27 +1,49 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href = '{% static "users/css/styles.css" %}' rel = "stylesheet" />
     <title>{{ title }}</title>
 </head>
 <body>
-    {% if user.is_authenticated %}
-        <a>{{ user.username }}</a>
-        <span>|</span>
-        <a href = "{% url 'profile'%}">Profile</a>
-    {% else %}
-        <a href = "{% url 'login' %}">Log in</a>
-        <span>|</span>
-        <a href = "{% url 'register'%}">Register</a>
-    {% endif %}
+    <div  class = 'menu'>
+        <div class = "user-brief">
+            {% if user.is_authenticated %}
+                <a>{{ user.username }}</a>
+                <span>|</span>
+                <a href = "{% url 'profile'%}">Profile</a>
+            {% else %}
+                <a href = "{% url 'login' %}">Log in</a>
+                <span>|</span>
+                <a href = "{% url 'register'%}">Register</a>
+            {% endif %}
+        </div>
 
-    <form method = 'get' action = '{% url "groups"%}'>
-        <input type="search" name = 'search'>
-        <button type = 'submit'>search</button>
-    </form>
-    <a href = '{% url "groups" %}'>groups</a>
-    <hr>
+
+        {% if creation_url %}
+            <form class = 'search-bar' method = 'get' action = '{% url "group_wall" title %}'>
+                <input type="search" name = 'search'>
+                <button type = 'submit'>search</button>
+            </form>        
+        {% else %}
+            <form class = 'search-bar' method = 'get' action = '{% url "groups"%}'>
+                <input type="search" name = 'search'>
+                <button type = 'submit'>search</button>
+            </form>
+        {% endif %}
+
+
+        {% if creation_url_group %}
+        <a class="goto" href="{{ creation_url_group }}">create group</a>
+        {% elif creation_url %}
+        <a class="goto" href="{{ creation_url }}">create post</a>
+        {% else %}
+            <a class="goto" href="{% url 'groups' %}">Groups</a>
+        {% endif %}
+    </div>
     {% block content %}
     {% endblock %}
 </body>

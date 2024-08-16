@@ -8,7 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
-from django.db.models import Count
+from django.db.models import Count, Q
 from .forms import CreateGroupForm, EditGroupForm, CreatePostForm, EditPostForm
 from .models import Group, GroupPosts
 
@@ -25,7 +25,7 @@ class ListGroups(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['creation_url'] = reverse_lazy('create_group')
+        context['creation_url_group'] = reverse_lazy('create_group')
         return context
     
     def get_queryset(self):
@@ -69,7 +69,12 @@ class GroupWall(ListView):
         return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        return GroupPosts.objects.filter(post__group_slug=self.kwargs.get('slug')).annotate(likes_count=Count('likes')).order_by('-likes_count', '-time_created')
+        query = self.request.GET.get('search')
+        print(query)
+        if query:
+            return GroupPosts.objects.filter(Q(post__group_slug=self.kwargs.get('slug')) & Q(text__icontains=query)).annotate(likes_count=Count('likes'))
+        else:
+            return GroupPosts.objects.filter(post__group_slug=self.kwargs.get('slug')).annotate(likes_count=Count('likes'))
 
     def post(self, request, *args, **kwargs):
         post_id = request.POST.get('likes')
