@@ -1,0 +1,21 @@
+.menu {
+    display: flex;
+    align-items: center;
+    background-color: #f8f9fa;
+    padding: 10px 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+} 
+
+.user-brief {
+    flex: 1;
+}
+
+.search-bar {
+    flex: 2;
+    text-align: center;
+}
+
+.goto {
+    flex: 1;
+    text-align: right;
+}

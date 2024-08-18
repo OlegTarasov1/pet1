@@ -1,19 +1,21 @@
 {% extends 'users/base.html' %}
 
-
 {% block content %}
-    <h1>profile of: {{ user.username }}</h1>
-    <form action="{% url 'password_change' %}" method = 'get'>
-        <button type = 'submit'>change password</button>
-    </form>
-    <hr>
-    <p>{{ user.first_name }} {{user.last_name}}</p>
-    <p>{{ user.email }}</p>
-    <hr>
-    <small>last login: {{ user.last_login }}</small>
-    <form action = '{% url "logout" %}' method="post">
-        {% csrf_token %}
-        <button method = 'submit'>log out</button>
-    </form>
-
+    <div class="profile-container">
+        <h1 class="profile-title">Profile Username: {{ user.username }}</h1>
+        <form action="{% url 'password_change' %}" method="get" class="profile-form">
+            <button type="submit" class="btn">Change password</button>
+        </form>
+        <hr>
+        <div class="profile-info">
+            <p><strong>Name:</strong> {{ user.first_name }} {{ user.last_name }}</p>
+            <p><strong>Email:</strong> {{ user.email }}</p>
+            <hr>
+            <small><strong>Last enter:</strong> {{ user.last_login }}</small>
+        </div>
+        <form action='{% url "logout" %}' method="post" class="logout-form">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-logout">Log out</button>
+        </form>
+    </div>
 {% endblock %}

@@ -1,41 +1,54 @@
 {% extends 'users/base.html' %}
 
 {% block content %}
-    <div class="post-container">
-        <div class="post">
+    <div>
+        <div >
             {% for i in post %}
-            <div class="post-item">
-                <p class="post-creator">{{ i.creator }}</p>
-                <p class="post-text">{{ i.text }}</p>
-                {% if i.file %}
-                <img src="{{ i.file.url }}" width="300" height="400" class="post-image">
-                <p class="post-image-url">{{ i.file.url }}</p>
-                {% endif %}
-                
-                {% if request.user == i.creator %}
-                <a class="edit-link" href="{% url 'edit_post' slug_group=title slug_post=i.post_slug %}">Edit</a>
-                {% endif %}
-                <form method="post" class="like-form">
-                    {% csrf_token %}
-                    <input type="hidden" value="{{ i.pk }}" name='likes'>
-                    <input type='submit' value="Like {{ i.amnt_of_likes }}" class="like-button">
-                </form>
-                <small class="post-time">time created: {{ i.time_created }}</small>
-            </div>
-            <hr class="divider"> <!-- Разделитель между постами -->
+                <div class="blog-container-post">
+                    <p>{{ i.creator }}</p>
+                    <hr>
+                    <p>{{ i.text }}</p>
+                    {% if i.file %}
+                        <img src="{{ i.file.url }}" width="300">
+                        <!-- <p image-url>{{ i.file.url }}</p> -->
+                    {% endif %}
+                    
+                    {% if request.user == i.creator %}
+                        <a href="{% url 'edit_post' slug_group=title slug_post=i.post_slug %}">Edit</a>
+                    {% endif %}
+                    <form method="post">
+                        {% csrf_token %}
+                        <input style="align-content: left;" type="hidden" value="{{ i.pk }}" name='likes'>
+                        <input type='submit' value="Like {{ i.amnt_of_likes }}">
+                    </form>
+                    <hr>
+                    <small>time created: {{ i.time_created }}</small>
+                </div>
             {% endfor %}
         </div>
     </div>
 
 
-    <ul class="pagination">
-        {% if page_obj.has_other_pages %}
+    {% if page_obj.has_other_pages %}
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+                <li class="pagination-item">
+                    <a href="?page={{ page_obj.previous_page_number }}" class="pagination-link">« Назад</a>
+                </li>
+            {% endif %}
+
             {% for i in paginator.page_range %}
-                <li class="{% if page_obj.number == i %}active{% endif %}">
-                    <a href="?page={{ i }}">{{ i }}</a>
+                <li class="pagination-item {% if page_obj.number == i %}active{% endif %}">
+                    <a href="?page={{ i }}" class="pagination-link">{{ i }}</a>
                 </li>
             {% endfor %}
-        {% endif %}
-    </ul>
+
+            {% if page_obj.has_next %}
+                <li class="pagination-item">
+                    <a href="?page={{ page_obj.next_page_number }}" class="pagination-link">Вперед »</a>
+                </li>
+            {% endif %}
+        </ul>
+    {% endif %}
 
 {% endblock %}
