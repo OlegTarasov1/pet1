@@ -131,3 +131,13 @@ AUTHENTICATION_BACKENDS = [
 
 MEDIA_ROOT = BASE_DIR / 'meida'
 MEDIA_URL = '/media/'
+
+CACHES = {
+       'default': {
+           'BACKEND': 'django.core.cache.backends.RedisCache',
+           'LOCATION': 'redis://redis:6379',
+           'OPTIONS': {
+               'db': '1',
+           }
+       }
+   }

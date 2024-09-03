@@ -11,6 +11,8 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Count, Q
 from .forms import CreateGroupForm, EditGroupForm, CreatePostForm, EditPostForm
 from .models import Group, GroupPosts
+from django.core.cache import cache
+import django_redis
 
 
 class ListGroups(ListView):
@@ -31,7 +33,13 @@ class ListGroups(ListView):
     def get_queryset(self):
         query = self.request.GET.get('search')
         if query:
-            return Group.objects.filter(group_name__icontains=query)
+            frequently_asked = cache.get(query)
+            if frequently_asked:
+                return Group.objects.filter(group_name__icontains=query)
+            else:
+                value_to_cache = list(Group.objects.filter(group_name__icontains=query))
+                cache.set(query, value_to_cache, 60)
+                return value_to_cache
         else:
             return super().get_queryset()
 
@@ -70,11 +78,23 @@ class GroupWall(ListView):
 
     def get_queryset(self):
         query = self.request.GET.get('search')
-        print(query)
-        if query:
-            return GroupPosts.objects.filter(Q(post__group_slug=self.kwargs.get('slug')) & Q(text__icontains=query)).annotate(likes_count=Count('likes'))
+        frequently_searched = cache.get(query)
+        if frequently_searched:
+            return frequently_searched
         else:
-            return GroupPosts.objects.filter(post__group_slug=self.kwargs.get('slug')).annotate(likes_count=Count('likes'))
+            if query:
+                the_queryset = GroupPosts.objects.filter(Q(post__group_slug=self.kwargs.get('slug')) & Q(text__icontains=query)).annotate(likes_count=Count('likes'))
+                cache.set(query, list(the_queryset), 60)
+                return the_queryset
+            else:
+                base = cache.get('base')
+                if base:
+                    return base
+                else:
+                    the_queryset = GroupPosts.objects.filter(post__group_slug=self.kwargs.get('slug')).annotate(likes_count=Count('likes'))
+                    cache.set('base', list(the_queryset), 60)
+                    return the_queryset
+        
 
     def post(self, request, *args, **kwargs):
         post_id = request.POST.get('likes')
@@ -123,7 +143,14 @@ class EditPost(UpdateView):
         return reverse_lazy('group_wall', kwargs = {'slug': self.kwargs.get('slug_group')})
 
     def get_object(self):
-        return get_object_or_404(GroupPosts, post_slug = self.kwargs.get('slug_post'))
+        slug = self.kwargs.get('slug_post')
+        cached_data = cache.get(slug)
+        if cached_data:
+            return cached_data
+        else:
+            obj = get_object_or_404(GroupPosts, post_slug = slug)
+            cache.set(slug, obj, 60)
+            return obj
     
 
 class GroupEdit(UpdateView):
