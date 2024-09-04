@@ -5,7 +5,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-8arbrg3x=z2pm^c#+!ct&s+d_g0@f&p5$&@hqmmx-01!wdknr0'
 
-DEBUG = True
+DEBUG = False
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'olegtarasov1002@gmail.com'
 EMAIL_HOST_PASSWORD = 'pjpk fuaf yfmq tzvn'
@@ -17,7 +17,7 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 SERVER_EMAIL = EMAIL_HOST_USER
 EMAIL_ADMIN = EMAIL_HOST_USER
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
 
 INSTALLED_APPS = [
@@ -73,7 +73,7 @@ DATABASES = {
         'NAME': 'pet1',
         'USER': 'postgres',
         'PASSWORD': '1201',
-        'HOST': 'localhost',
+        'HOST': 'postgres_db',
         'PORT': '5432',
     }
 }
@@ -133,11 +133,11 @@ MEDIA_ROOT = BASE_DIR / 'meida'
 MEDIA_URL = '/media/'
 
 CACHES = {
-       'default': {
-           'BACKEND': 'django.core.cache.backends.RedisCache',
-           'LOCATION': 'redis://redis:6379',
-           'OPTIONS': {
-               'db': '1',
-           }
-       }
-   }
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://redis:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}

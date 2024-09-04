@@ -12,7 +12,6 @@ from django.db.models import Count, Q
 from .forms import CreateGroupForm, EditGroupForm, CreatePostForm, EditPostForm
 from .models import Group, GroupPosts
 from django.core.cache import cache
-import django_redis
 
 
 class ListGroups(ListView):

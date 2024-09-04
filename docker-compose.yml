@@ -1,0 +1,32 @@
+services:
+  django_project:
+    build: .
+    container_name: django_c
+    ports:
+      - '8000:8000'
+    depends_on:
+      - redis
+      - postgres_db
+    environment:
+      - REDIS_HOST=redis
+
+  redis:
+    image: redis
+    container_name: redis_c
+    ports:
+      - '6379:6379'
+
+  postgres_db:
+    image: postgres:latest
+    container_name: postgres_c
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_DB: "pet1"  
+      POSTGRES_USER: "postgres" 
+      POSTGRES_PASSWORD: "1201"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data 
+
+volumes:
+  postgres_data: 
